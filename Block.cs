@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace BlockchainImplementation
 {
@@ -9,8 +6,8 @@ namespace BlockchainImplementation
   {
     public int Index { get; set; }
     public DateTimeOffset TimeStamp { get; set; }
-    public byte [] PrevHash { get; set; } // should be byte
-    public byte [] Hash { get; set; } // should be byte & nullable
+    public byte [] PrevHash { get; set; }
+    public byte [] Hash { get; set; }
     public string Data { get; set; }
 
     // block structure
