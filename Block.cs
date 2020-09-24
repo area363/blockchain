@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BlockchainImplementation
 {
@@ -23,10 +25,10 @@ namespace BlockchainImplementation
     // method for calculating hash
     public byte[] CalculateHash()
     {
-      Random rnd = new Random();
-      Byte[] hash = new Byte[1024];
-      rnd.NextBytes(hash);
-      return hash;
+      SHA256 sha256 = SHA256.Create();
+      byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{Data}");
+      
+      return sha256.ComputeHash(input);
     }
   }
 }

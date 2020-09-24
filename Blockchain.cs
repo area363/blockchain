@@ -49,11 +49,19 @@ namespace BlockchainImplementation
       {
         Block currentBlock = Chain[i];
         Block previousBlock = Chain[i - 1];
-
-        if (currentBlock.PrevHash != previousBlock.Hash)
+        for (int j = 0; j < currentBlock.Hash.Length; j++) 
         {
-          Console.WriteLine("hi");
-          return false;
+          if (currentBlock.Hash[j] != currentBlock.CalculateHash()[j])
+          {
+            return false;
+          }
+        }
+        for (int j = 0; j < currentBlock.PrevHash.Length; j++) 
+        {
+          if (currentBlock.PrevHash[j] != previousBlock.Hash[j])
+          {
+            return false;
+          }
         }
       }
       return true;
