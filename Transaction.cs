@@ -6,14 +6,14 @@ namespace BlockchainImplementation
 {
   public class Transaction
   {
-    public string FromAddress { get; set; }
-    public string ToAddress { get; set; }
+    public string Sender { get; set; }
+    public string Recipient { get; set; }
     public int Amount { get; set; }
 
-    public Transaction(string fromAddress, string toAddress, int amount)
+    public Transaction(string sender, string recipient, int amount)
     {
-      FromAddress = fromAddress;
-      ToAddress = toAddress;
+      Sender = sender;
+      Recipient = recipient;
       Amount = amount;
     }
   }

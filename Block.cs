@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,15 +11,16 @@ namespace BlockchainImplementation
     public DateTimeOffset TimeStamp { get; set; }
     public byte [] PrevHash { get; set; }
     public byte [] Hash { get; set; }
-    public string Data { get; set; }
+    // public string Data { get; set; }
+    public IList<Transaction> Transactions { get; set; }
 
     // block structure
-    public Block (DateTimeOffset timeStamp, byte [] prevHash, string data)
+    public Block (DateTimeOffset timeStamp, byte [] prevHash, IList<Transaction> transactions)
     {
       Index = 0;
       TimeStamp = timeStamp;
       PrevHash = prevHash;
-      Data = data;
+      Transactions = transactions;
       Hash = CalculateHash();
     }
 
@@ -26,7 +28,7 @@ namespace BlockchainImplementation
     public byte[] CalculateHash()
     {
       SHA256 sha256 = SHA256.Create();
-      byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{Data}");
+      byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{Transactions}");
       
       return sha256.ComputeHash(input);
     }

@@ -5,7 +5,9 @@ namespace BlockchainImplementation
 {
   public class Blockchain
   {
+    IList<Transaction> PendingTransactions = new List<Transaction>();
     public IList<Block> Chain { set; get; }
+    
 
     // initial methods to run
     public Blockchain() 
@@ -30,6 +32,42 @@ namespace BlockchainImplementation
     public Block GetlastBlock()
     {
       return Chain[Chain.Count -1];
+    }
+
+    // add transaction to pending transaction list
+    public void CreateTransaction(Transaction transaction)
+    {
+      PendingTransactions.Add(transaction);
+    }
+
+    // get balance of address
+    public int GetBalance(string address)
+    {
+      int balance = 0;
+      int spending = 0;
+      int income = 0;
+      
+      foreach (Block block in Chain)
+      {
+        IList<Transaction> transactions = block.Transactions;
+
+        foreach(Transaction transaction in transactions)
+        {
+          string sender = transaction.Sender;
+          string recipient = transaction.Recipient;
+
+          if (address == sender) 
+          {
+            spending += transaction.Amount;
+          }
+          if (address == recipient) 
+          {
+            income += transaction.Amount;
+          }
+          balance = income - spending;
+        }
+      }
+      return balance;
     }
 
     // add new block
