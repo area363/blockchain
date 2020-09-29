@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace BlockchainImplementation
 {
   public class Transaction
