@@ -7,8 +7,8 @@ namespace BlockchainImplementation
   {
     IList<Transaction> PendingTransactions = new List<Transaction>();
     public IList<Block> Chain { set; get; }
-    
 
+    
     // initial methods to run
     public Blockchain() 
     {
@@ -25,11 +25,11 @@ namespace BlockchainImplementation
     // add genesis block on chain
     public void AddGenesisBlock()
     {
-      Chain.Add(new Block(DateTimeOffset.Now, null, ""));
+      Chain.Add(new Block(DateTimeOffset.Now, null, PendingTransactions));
     }
 
     // get the last block
-    public Block GetlastBlock()
+    public Block GetLastBlock()
     {
       return Chain[Chain.Count -1];
     }
@@ -40,6 +40,14 @@ namespace BlockchainImplementation
       PendingTransactions.Add(transaction);
     }
 
+    public void ProcessPendingTransactions(string address)
+    {
+      Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
+      AddBlock(block);
+
+      // PendingTransactions = new List<Transaction>();
+      // CreateTransaction(new Transaction(null, address, Reward));
+    }
     // get balance of address
     public int GetBalance(string address)
     {
@@ -73,7 +81,7 @@ namespace BlockchainImplementation
     // add new block
     public void AddBlock(Block block)
     {
-      Block lastBlock = GetlastBlock();
+      Block lastBlock = GetLastBlock();
       block.Index = lastBlock.Index + 1;
       block.PrevHash = lastBlock.Hash;
       block.Hash = block.CalculateHash();
