@@ -38,16 +38,9 @@ namespace BlockchainImplementation
       string leadingZeroes = new string('0', difficulty);
       while (this.Hash == null || Convert.ToBase64String(this.Hash).Substring(0, difficulty) != leadingZeroes)
       {
-      // Console.WriteLine($"1. {leadingZeroes}");
-      // Console.WriteLine($"1. {Convert.ToBase64String(this.Hash)}");
-      // Console.WriteLine($"1. {Convert.ToBase64String(this.Hash).Substring(0, difficulty)}");
         this.Nonce++;
         this.Hash = this.CalculateHash();
       }
-      // Console.WriteLine(this.Nonce);
-      // Console.WriteLine($"2. {leadingZeroes}");
-      // Console.WriteLine($"2. {Convert.ToBase64String(this.Hash)}");
-      // Console.WriteLine($"2. {Convert.ToBase64String(this.Hash).Substring(0, difficulty)}");
     }
   }
 }

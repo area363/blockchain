@@ -5,13 +5,16 @@ using Newtonsoft.Json;
 namespace BlockchainImplementation
 {
     class Program
-    {
+    {   
+        public static int Port = 0;
+        public static Server Server = null;
+        public static Blockchain KidonCoin = new Blockchain();
         static void Main(string[] args)
         {
             var startTime = DateTime.Now;  
   
             Blockchain bc = new Blockchain();  
-            bc.CreateTransaction(new Transaction("Don", "Jon", 10));  
+            bc.CreateTransaction(new Transaction("Don", "Jon", 100));  
             bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
             bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
             bc.ProcessPendingTransactions("Jake");  

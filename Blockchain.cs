@@ -5,7 +5,7 @@ namespace BlockchainImplementation
 {
   public class Blockchain
   {
-    IList<Transaction> PendingTransactions = new List<Transaction>();
+    public IList<Transaction> PendingTransactions = new List<Transaction>();
     public IList<Block> Chain { set; get; }
     public int Difficulty { set; get; } = 1;
     public int Reward = 1;
@@ -32,6 +32,17 @@ namespace BlockchainImplementation
       Chain.Add(block);
     }
 
+    // add new block
+    public void AddBlock(Block block)
+    {
+      Block lastBlock = GetLastBlock();
+      block.Index = lastBlock.Index + 1;
+      block.PrevHash = lastBlock.Hash;
+      block.Hash = block.CalculateHash();
+      block.Mine(this.Difficulty);
+      Chain.Add(block);
+    }
+
     // get the last block
     public Block GetLastBlock()
     {
@@ -44,12 +55,15 @@ namespace BlockchainImplementation
       PendingTransactions.Add(transaction);
     }
 
+    // process transaction
     public void ProcessPendingTransactions(string address)
     {
       CreateTransaction(new Transaction(null, address, Reward));
       Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
       AddBlock(block);
+
     }
+
     // get balance of address
     public int GetBalance(string address)
     {
@@ -78,17 +92,6 @@ namespace BlockchainImplementation
         }
       }
       return balance;
-    }
-
-    // add new block
-    public void AddBlock(Block block)
-    {
-      Block lastBlock = GetLastBlock();
-      block.Index = lastBlock.Index + 1;
-      block.PrevHash = lastBlock.Hash;
-      block.Hash = block.CalculateHash();
-      block.Mine(this.Difficulty);
-      Chain.Add(block);
     }
 
     // validate chain by comparing hash values;
