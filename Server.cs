@@ -31,19 +31,19 @@ namespace BlockchainImplementation
       {
         Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
 
-        if (newChain.ValidateChain() && newChain.Chain.Count > Program.KidonCoin.Chain.Count)
+        if (newChain.ValidateChain() && newChain.Chain.Count > Program.KCoin.Chain.Count)
         {
           List<Transaction> newTransactions = new List<Transaction>();
           newTransactions.AddRange(newChain.PendingTransactions);
-          newTransactions.AddRange(Program.KidonCoin.PendingTransactions);
+          newTransactions.AddRange(Program.KCoin.PendingTransactions);
 
           newChain.PendingTransactions = newTransactions;
-          Program.KidonCoin = newChain;
+          Program.KCoin = newChain;
         }
 
         if (!chainSync)
         {
-          Send(JsonConvert.SerializeObject(Program.KidonCoin));
+          Send(JsonConvert.SerializeObject(Program.KCoin));
           chainSync = true;
         }
       }

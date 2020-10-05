@@ -8,7 +8,7 @@ namespace BlockchainImplementation
     {   
         public static int Port = 0;
         public static Server Server = null;
-        public static Blockchain KidonCoin = new Blockchain();
+        public static Blockchain KCoin = new Blockchain();
         static void Main(string[] args)
         {
             var startTime = DateTime.Now;  
