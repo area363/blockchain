@@ -11,7 +11,6 @@ namespace BlockchainImplementation
     public DateTimeOffset TimeStamp { get; set; }
     public byte [] PrevHash { get; set; }
     public byte [] Hash { get; set; }
-    // public string Data { get; set; }
     public IList<Transaction> Transactions { get; set; }
     public int Nonce { get; set; }
 

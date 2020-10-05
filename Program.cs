@@ -10,27 +10,24 @@ namespace BlockchainImplementation
         {
             var startTime = DateTime.Now;  
   
-    Blockchain bc = new Blockchain();  
-    bc.CreateTransaction(new Transaction("Don", "Jon", 10));  
-  
-    bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
-    bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
-    bc.ProcessPendingTransactions("Jake");  
-    
-    var endTime = DateTime.Now;  
-  
-    Console.WriteLine($"Duration: {endTime - startTime}");  
-  
-    Console.WriteLine("=========================");  
-    Console.WriteLine($"Don' balance: {bc.GetBalance("Don")}");  
-    Console.WriteLine($"Jon' balance: {bc.GetBalance("Jon")}");  
-    Console.WriteLine($"Jake' balance: {bc.GetBalance("Jake")}");  
-  
-    Console.WriteLine("=========================");  
-    Console.WriteLine($"bc");  
-    Console.WriteLine(JsonConvert.SerializeObject(bc, Formatting.Indented));  
-  
-    //  Console.ReadKey();  
+            Blockchain bc = new Blockchain();  
+            bc.CreateTransaction(new Transaction("Don", "Jon", 10));  
+            bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
+            bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
+            bc.ProcessPendingTransactions("Jake");  
+            
+            var endTime = DateTime.Now;  
+        
+            Console.WriteLine($"Duration: {endTime - startTime}");  
+            Console.WriteLine("=========================");  
+            Console.WriteLine($"Don' balance: {bc.GetBalance("Don")}");  
+            Console.WriteLine($"Jon' balance: {bc.GetBalance("Jon")}");  
+            Console.WriteLine($"Jake' balance: {bc.GetBalance("Jake")}");  
+            Console.WriteLine("=========================");  
+            Console.WriteLine($"bc");  
+            Console.WriteLine(JsonConvert.SerializeObject(bc, Formatting.Indented));  
+        
+            //  Console.ReadKey();  
          
             // // add 4 additional blocks
             // bc.AddBlock(new Block(DateTimeOffset.Now, null, "data1"));
