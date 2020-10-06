@@ -7,25 +7,19 @@ namespace BlockchainImplementation
   {
     public IList<Transaction> PendingTransactions = new List<Transaction>();
     public IList<Block> Chain { set; get; }
-    public int Difficulty { set; get; } = 1;
+    public int Difficulty { set; get; } = 2;
     public int Reward = 1;
-    
-    // initial methods to run
-    public Blockchain() 
-    {
-      InitializeChain();
-      AddGenesisBlock();
-    }
 
-    // initialize chain with a new list
+    // initialize chain and add genesis block
     public void InitializeChain()
     {
       Chain = new List<Block>();
+      AddGenesisBlock();
     }
 
     // add genesis block on chain
     public void AddGenesisBlock()
-    { 
+    {
       Block block = new Block(DateTimeOffset.Now, null, PendingTransactions);
       block.Mine(Difficulty);
       PendingTransactions = new List<Transaction>();
@@ -39,14 +33,14 @@ namespace BlockchainImplementation
       block.Index = lastBlock.Index + 1;
       block.PrevHash = lastBlock.Hash;
       block.Hash = block.CalculateHash();
-      block.Mine(this.Difficulty);
+      block.Mine(Difficulty);
       Chain.Add(block);
     }
 
     // get the last block
     public Block GetLastBlock()
     {
-      return Chain[Chain.Count -1];
+      return Chain[Chain.Count - 1];
     }
 
     // add transaction to pending transaction list
@@ -58,10 +52,12 @@ namespace BlockchainImplementation
     // process transaction
     public void ProcessPendingTransactions(string address)
     {
-      CreateTransaction(new Transaction(null, address, Reward));
+      // create reward transaction for processing node and add block
+      CreateTransaction(new Transaction("KCoin", address, Reward));
       Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
       AddBlock(block);
-
+      // reset PendingTransactions list
+      PendingTransactions = new List<Transaction>();
     }
 
     // get balance of address
@@ -70,24 +66,28 @@ namespace BlockchainImplementation
       int balance = 0;
       int spending = 0;
       int income = 0;
-      
+
       foreach (Block block in Chain)
       {
         IList<Transaction> transactions = block.Transactions;
 
-        foreach(Transaction transaction in transactions)
+        // iterate over each transaction
+        foreach (Transaction transaction in transactions)
         {
           string sender = transaction.Sender;
           string recipient = transaction.Recipient;
 
-          if (address == sender) 
+          // increase spending for sender
+          if (address == sender)
           {
             spending += transaction.Amount;
           }
-          if (address == recipient) 
+          //increase income for recipient
+          if (address == recipient)
           {
             income += transaction.Amount;
           }
+          // calculate balance
           balance = income - spending;
         }
       }
@@ -101,19 +101,16 @@ namespace BlockchainImplementation
       {
         Block currentBlock = Chain[i];
         Block previousBlock = Chain[i - 1];
-        for (int j = 0; j < currentBlock.Hash.Length; j++) 
+
+        // return false if the hash of current block doesn't equal the result of calculatehash()
+        if (Convert.ToBase64String(currentBlock.Hash) != Convert.ToBase64String(currentBlock.CalculateHash()))
         {
-          if (currentBlock.Hash[j] != currentBlock.CalculateHash()[j])
-          {
-            return false;
-          }
+          return false;
         }
-        for (int j = 0; j < currentBlock.PrevHash.Length; j++) 
+        // return false if the prevhash of current block doesn't equal the hash of previous block
+        if (Convert.ToBase64String(currentBlock.PrevHash) != Convert.ToBase64String(previousBlock.Hash))
         {
-          if (currentBlock.PrevHash[j] != previousBlock.Hash[j])
-          {
-            return false;
-          }
+          return false;
         }
       }
       return true;

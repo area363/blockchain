@@ -7,7 +7,7 @@ using WebSocketSharp.Server;
 
 namespace BlockchainImplementation
 {
-  public class Server: WebSocketBehavior
+  public class Server : WebSocketBehavior
   {
     bool chainSync = false;
     WebSocketServer server = null;
@@ -22,12 +22,12 @@ namespace BlockchainImplementation
 
     protected override void OnMessage(MessageEventArgs e)
     {
-      if (e.Data == "Hi Server")
+      if (e.Data == "Connected to Client")
       {
         Console.WriteLine(e.Data);
-        Send("Hi Client");
+        Send("Connected to Server");
       }
-      else 
+      else
       {
         Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
 

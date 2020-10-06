@@ -4,75 +4,82 @@ using Newtonsoft.Json;
 
 namespace BlockchainImplementation
 {
-    class Program
-    {   
-        public static int Port = 0;
-        public static Server Server = null;
-        public static Blockchain KCoin = new Blockchain();
-        static void Main(string[] args)
+  class Program
+  {
+    public static int Port = 0;
+    public static Server Server = null;
+    public static Client Client = new Client();
+    public static Blockchain KCoin = new Blockchain();
+    public static string name = null;
+    static void Main(string[] args)
+    {
+      KCoin.InitializeChain();
+      if (args.Length == 0)
+      {
+        Console.WriteLine("Please Enter Port and Name");
+        System.Environment.Exit(0);
+      }
+      else if (args.Length == 1)
+      {
+        Console.WriteLine("Please Enter a Name");
+        System.Environment.Exit(0);
+      }
+      else
+      {
+        Port = int.Parse(args[0]);
+        name = args[1];
+      }
+
+      if (Port > 0)
+      {
+        Server = new Server();
+        Server.Start();
+      }
+
+      Console.WriteLine($"Current user: {name}");
+      Console.WriteLine("======================");
+      Console.WriteLine("1. Connect to server");
+      Console.WriteLine("2. Add transaction");
+      Console.WriteLine("3. Show blockchain");
+      Console.WriteLine("4. Get balance");
+      Console.WriteLine("5. End program");
+      Console.WriteLine("======================");
+
+      int option = 0;
+      while (option != 5)
+      {
+        switch (option)
         {
-            var startTime = DateTime.Now;  
-  
-            Blockchain bc = new Blockchain();  
-            bc.CreateTransaction(new Transaction("Don", "Jon", 100));  
-            bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
-            bc.CreateTransaction(new Transaction("Jon", "Don", 5));  
-            bc.ProcessPendingTransactions("Jake");  
-            
-            var endTime = DateTime.Now;  
-        
-            Console.WriteLine($"Duration: {endTime - startTime}");  
-            Console.WriteLine("=========================");  
-            Console.WriteLine($"Don' balance: {bc.GetBalance("Don")}");  
-            Console.WriteLine($"Jon' balance: {bc.GetBalance("Jon")}");  
-            Console.WriteLine($"Jake' balance: {bc.GetBalance("Jake")}");  
-            Console.WriteLine("=========================");  
-            Console.WriteLine($"bc");  
-            Console.WriteLine(JsonConvert.SerializeObject(bc, Formatting.Indented));  
-        
-            //  Console.ReadKey();  
-         
-            // // add 4 additional blocks
-            // bc.AddBlock(new Block(DateTimeOffset.Now, null, "data1"));
-            // bc.AddBlock(new Block(DateTimeOffset.Now, null, "data2"));
-            // bc.AddBlock(new Block(DateTimeOffset.Now, null, "data3"));
-            // bc.AddBlock(new Block(DateTimeOffset.Now, null, "data4"));
-            
-            // Console.WriteLine("Chain Count: " + bc.Chain.Count); // 5
-            // Console.WriteLine("Original Validation: " + bc.ValidateChain()); // true
-
-            // // manipulate Index
-            // Console.WriteLine("Manipulate Index");
-            // int OriginalIndex = bc.Chain[4].Index;
-            // bc.Chain[4].Index = 5;
-            // Console.WriteLine("After manipulation: " + bc.ValidateChain()); // false
-            // bc.Chain[4].Index = OriginalIndex;
-            // Console.WriteLine("Revert: " + bc.ValidateChain()); // true
-
-            // // manipulate TimeStamp
-            // Console.WriteLine("Manipulate TimeStamp");
-            // DateTimeOffset OriginalTime = bc.Chain[4].TimeStamp;
-            // bc.Chain[4].TimeStamp= DateTimeOffset.UtcNow;
-            // Console.WriteLine("After manipulation: " + bc.ValidateChain()); // false
-            // bc.Chain[4].TimeStamp= OriginalTime;
-            // Console.WriteLine("Revert: " + bc.ValidateChain()); // true
-
-            // // manipulate Data
-            // Console.WriteLine("Manipulate Data");
-            // IList<Transaction> OriginalData = bc.Chain[4].Transactions;
-            // bc.Chain[4].Transactions = "falseData";
-            // Console.WriteLine("After manipulation: " + bc.ValidateChain()); // false
-            // bc.Chain[4].Transactions = OriginalData;
-            // Console.WriteLine("Revert: " + bc.ValidateChain()); // true
-
-            // // manipulate PrevHash
-            // Console.WriteLine("Manipulate PrevHash");
-            // byte [] OriginalPrevHash = bc.Chain[4].PrevHash;
-            // byte [] dummyHash = null;
-            // bc.Chain[4].PrevHash = dummyHash;
-            // Console.WriteLine("After manipulation: " + bc.ValidateChain()); // false
-            // bc.Chain[4].PrevHash = OriginalPrevHash;
-            // Console.WriteLine("Revert: " + bc.ValidateChain()); // true
+          case 1:
+            Console.WriteLine("Enter server URL:");
+            string URL = Console.ReadLine();
+            Client.Connect($"{URL}/Blockchain");
+            break;
+          case 2:
+            Console.WriteLine("Enter recipient:");
+            string recipient = Console.ReadLine();
+            Console.WriteLine("Enter amount:");
+            string amount = Console.ReadLine();
+            // create new transaction
+            KCoin.CreateTransaction(new Transaction(name, recipient, int.Parse(amount)));
+            // process transactions
+            KCoin.ProcessPendingTransactions(name);
+            // send data to connected nodes
+            Client.Broadcast(JsonConvert.SerializeObject(KCoin));
+            break;
+          case 3:
+            Console.WriteLine(JsonConvert.SerializeObject(KCoin, Formatting.Indented));
+            break;
+          case 4:
+            Console.WriteLine("Enter account name: ");
+            string address = Console.ReadLine();
+            Console.WriteLine(KCoin.GetBalance(address));
+            break;
         }
+        Console.WriteLine("Select an option: ");
+        option = int.Parse(Console.ReadLine());
+      }
+      Client.Close();
     }
+  }
 }

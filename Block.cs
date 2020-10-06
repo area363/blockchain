@@ -33,6 +33,7 @@ namespace BlockchainImplementation
       return sha256.ComputeHash(input);
     }
 
+    // method for mining
     public void Mine(int difficulty)
     {
       string leadingZeroes = new string('0', difficulty);

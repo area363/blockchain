@@ -16,12 +16,13 @@ namespace BlockchainImplementation
       {
         WebSocket websocket = new WebSocket(url);
         websocket.OnMessage += (sender, e) =>
-        {
-          if (e.Data == "Hi Client")
+        { 
+          // print data if message is received from server
+          if (e.Data == "Connected to Server")
           {
             Console.WriteLine(e.Data);
           }
-          else 
+          else
           {
             Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
             if (newChain.ValidateChain() && newChain.Chain.Count > Program.KCoin.Chain.Count)
@@ -36,20 +37,27 @@ namespace BlockchainImplementation
           }
         };
         websocket.Connect();
-        websocket.Send("Hello Server");
+        websocket.Send("Connected to Client");
         websocket.Send(JsonConvert.SerializeObject(Program.KCoin));
         websocketDict.Add(url, websocket);
       }
     }
 
-    public void Send(string url, string data)
+    // method for sending data to connected nodes
+    public void Broadcast(string data)
     {
       foreach (var item in websocketDict)
       {
-        if (item.Key == url)
-        {
-          item.Value.Send(data);
-        }
+        item.Value.Send(data);
+      }
+    }
+
+    // method for closing client
+    public void Close()
+    {
+      foreach (var item in websocketDict)
+      {
+        item.Value.Close();
       }
     }
   }
