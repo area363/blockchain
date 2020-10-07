@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace BlockchainImplementation
 {
@@ -9,6 +10,7 @@ namespace BlockchainImplementation
     public IList<Block> Chain { set; get; }
     public int Difficulty { set; get; } = 2;
     public int Reward = 1;
+    public IList<Account> Accounts = new List<Account>();
 
     // initialize chain and add genesis block
     public void InitializeChain()
@@ -56,42 +58,61 @@ namespace BlockchainImplementation
       CreateTransaction(new Transaction("KCoin", address, Reward));
       Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
       AddBlock(block);
+      CalculateBalance(block);
       // reset PendingTransactions list
       PendingTransactions = new List<Transaction>();
+    }
+
+    public void CalculateBalance(Block block)
+    {
+      
+      // Console.WriteLine(JsonConvert.SerializeObject(Accounts));
+      IList<Transaction> transactions = block.Transactions;
+
+      foreach (Transaction transaction in transactions)
+      { 
+        string sender = transaction.Sender;
+        string recipient = transaction.Recipient;
+        bool senderExists = false;
+        bool recipientExists = false;
+
+        foreach (Account account in Accounts) {
+          if (account.Address == sender)
+          {
+            account.Balance = account.CalculateBalance(-transaction.Amount);
+            senderExists = true;
+          }
+          if (account.Address == recipient)
+          {
+            account.Balance = account.CalculateBalance(transaction.Amount);
+            recipientExists = true;
+          }
+        }
+
+        if (!senderExists) 
+        {
+          Accounts.Add(new Account(sender, -transaction.Amount));
+        }
+
+        if (!recipientExists)
+        {
+          Accounts.Add(new Account(recipient, transaction.Amount));
+        }
+        
+      }
     }
 
     // get balance of address
     public int GetBalance(string address)
     {
-      int balance = 0;
-      int spending = 0;
-      int income = 0;
-
-      foreach (Block block in Chain)
+      foreach (Account account in Accounts) 
       {
-        IList<Transaction> transactions = block.Transactions;
-
-        // iterate over each transaction
-        foreach (Transaction transaction in transactions)
+        if (account.Address == address)
         {
-          string sender = transaction.Sender;
-          string recipient = transaction.Recipient;
-
-          // increase spending for sender
-          if (address == sender)
-          {
-            spending += transaction.Amount;
-          }
-          //increase income for recipient
-          if (address == recipient)
-          {
-            income += transaction.Amount;
-          }
-          // calculate balance
-          balance = income - spending;
+          return account.Balance;
         }
       }
-      return balance;
+      return -1;
     }
 
     // validate chain by comparing hash values;

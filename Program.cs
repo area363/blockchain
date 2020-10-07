@@ -13,6 +13,12 @@ namespace BlockchainImplementation
     public static string name = null;
     static void Main(string[] args)
     {
+    // KCoin.InitializeChain();
+    // KCoin.CreateTransaction(new Transaction("Don", "Jake", 1234));
+    // KCoin.ProcessPendingTransactions("Don");
+    // KCoin.CreateTransaction(new Transaction("Jake", "Don", 321));
+    // KCoin.ProcessPendingTransactions("Don");
+
       KCoin.InitializeChain();
       if (args.Length == 0)
       {
@@ -64,7 +70,7 @@ namespace BlockchainImplementation
             KCoin.CreateTransaction(new Transaction(name, recipient, int.Parse(amount)));
             // process transactions
             KCoin.ProcessPendingTransactions(name);
-            // send data to connected nodes
+            // send data to connected
             Client.Broadcast(JsonConvert.SerializeObject(KCoin));
             break;
           case 3:
@@ -73,7 +79,15 @@ namespace BlockchainImplementation
           case 4:
             Console.WriteLine("Enter account name: ");
             string address = Console.ReadLine();
-            Console.WriteLine(KCoin.GetBalance(address));
+            int balance = KCoin.GetBalance(address);
+            if (balance == -1)
+            {
+                Console.WriteLine("Account does not exist.");
+            } 
+            else 
+            {
+                Console.WriteLine($"{address} balance: {balance}");
+            }
             break;
         }
         Console.WriteLine("Select an option: ");
