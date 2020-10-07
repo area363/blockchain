@@ -2,8 +2,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WebSocketSharp;
-using WebSocketSharp.Server;
+using WebSocketSharp.NetCore;
+using WebSocketSharp.NetCore.Server;
 
 namespace BlockchainImplementation
 {

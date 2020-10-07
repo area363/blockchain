@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace BlockchainImplementation
 {
@@ -28,7 +29,7 @@ namespace BlockchainImplementation
     public byte[] CalculateHash()
     {
       SHA256 sha256 = SHA256.Create();
-      byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{Transactions}-{Nonce}");
+      byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{JsonConvert.SerializeObject(Transactions)}-{Nonce}");
       
       return sha256.ComputeHash(input);
     }
