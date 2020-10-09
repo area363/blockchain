@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text;
 
 namespace BlockchainImplementation
 {
@@ -55,7 +55,11 @@ namespace BlockchainImplementation
     public void ProcessPendingTransactions(string address)
     {
       // create reward transaction for processing node and add block
-      CreateTransaction(new Transaction("KCoin", address, Reward));
+      string KCoinPVKey = "Gs5cyGHUggSKg76veFUrw7v7/yUtzdjYV3fIhRqfSLY=";
+      string internalPrivateKey = string.Join("", Encoding.UTF8.GetBytes(KCoinPVKey)).Substring(0, 77);
+      string kcoinPublicKey = PublicKey.GetPublicKeyFromPrivateKeyEx(internalPrivateKey);
+      string message = $"1:{kcoinPublicKey}:{address}";
+      CreateTransaction(new Transaction(kcoinPublicKey, address, Reward, Signature.GetSignature(internalPrivateKey, message)));
       Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
       AddBlock(block);
       CalculateBalance(block);
@@ -65,18 +69,17 @@ namespace BlockchainImplementation
 
     public void CalculateBalance(Block block)
     {
-      
-      // Console.WriteLine(JsonConvert.SerializeObject(Accounts));
       IList<Transaction> transactions = block.Transactions;
 
       foreach (Transaction transaction in transactions)
-      { 
+      {
         string sender = transaction.Sender;
         string recipient = transaction.Recipient;
         bool senderExists = false;
         bool recipientExists = false;
 
-        foreach (Account account in Accounts) {
+        foreach (Account account in Accounts)
+        {
           if (account.Address == sender)
           {
             account.Balance = account.CalculateBalance(-transaction.Amount);
@@ -89,7 +92,7 @@ namespace BlockchainImplementation
           }
         }
 
-        if (!senderExists) 
+        if (!senderExists)
         {
           Accounts.Add(new Account(sender, -transaction.Amount));
         }
@@ -98,14 +101,14 @@ namespace BlockchainImplementation
         {
           Accounts.Add(new Account(recipient, transaction.Amount));
         }
-        
+
       }
     }
 
     // get balance of address
     public int GetBalance(string address)
     {
-      foreach (Account account in Accounts) 
+      foreach (Account account in Accounts)
       {
         if (account.Address == address)
         {
@@ -115,7 +118,7 @@ namespace BlockchainImplementation
       return -1;
     }
 
-    // validate chain by comparing hash values;
+    // validate chain by comparing hash values & verify signature for each transaction;
     public bool ValidateChain()
     {
       for (int i = 1; i < Chain.Count; i++)
@@ -132,6 +135,15 @@ namespace BlockchainImplementation
         if (Convert.ToBase64String(currentBlock.PrevHash) != Convert.ToBase64String(previousBlock.Hash))
         {
           return false;
+        }
+
+        foreach (var key in currentBlock.Transactions)
+        {
+          string message = $"{key.Amount}:{key.Sender}:{key.Recipient}";
+          if (!Signature.VerifySignature(message, key.Sender, key.Signature))
+          {
+            return false;
+          }
         }
       }
       return true;

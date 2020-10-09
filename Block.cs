@@ -10,13 +10,13 @@ namespace BlockchainImplementation
   {
     public int Index { get; set; }
     public DateTimeOffset TimeStamp { get; set; }
-    public byte [] PrevHash { get; set; }
-    public byte [] Hash { get; set; }
+    public byte[] PrevHash { get; set; }
+    public byte[] Hash { get; set; }
     public IList<Transaction> Transactions { get; set; }
     public int Nonce { get; set; }
 
     // block structure
-    public Block (DateTimeOffset timeStamp, byte [] prevHash, IList<Transaction> transactions)
+    public Block(DateTimeOffset timeStamp, byte[] prevHash, IList<Transaction> transactions)
     {
       Index = 0;
       TimeStamp = timeStamp;
@@ -30,7 +30,7 @@ namespace BlockchainImplementation
     {
       SHA256 sha256 = SHA256.Create();
       byte[] input = Encoding.ASCII.GetBytes($"{Index}-{TimeStamp}-{PrevHash}-{JsonConvert.SerializeObject(Transactions)}-{Nonce}");
-      
+
       return sha256.ComputeHash(input);
     }
 

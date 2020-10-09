@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using WebSocketSharp.NetCore;
 
 namespace BlockchainImplementation
@@ -16,7 +15,7 @@ namespace BlockchainImplementation
       {
         WebSocket websocket = new WebSocket(url);
         websocket.OnMessage += (sender, e) =>
-        { 
+        {
           // print data if message is received from server
           if (e.Data == "Connected to Server")
           {

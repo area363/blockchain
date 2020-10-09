@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using WebSocketSharp.NetCore;
 using WebSocketSharp.NetCore.Server;
 
@@ -33,10 +32,10 @@ namespace BlockchainImplementation
 
         if (newChain.ValidateChain() && newChain.Chain.Count > Program.KCoin.Chain.Count)
         {
+
           List<Transaction> newTransactions = new List<Transaction>();
           newTransactions.AddRange(newChain.PendingTransactions);
           newTransactions.AddRange(Program.KCoin.PendingTransactions);
-
           newChain.PendingTransactions = newTransactions;
           Program.KCoin = newChain;
         }

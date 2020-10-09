@@ -1,13 +1,28 @@
 using System;
-using System.Globalization;
-using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
 
 namespace BlockchainImplementation
 {
+  class PrivateKey
+  {
+    public string ID { get; set; }
+    public string Key { get; set; }
+
+    public PrivateKey(string id, string privatekey)
+    {
+      ID = id;
+      Key = privatekey;
+    }
+    public static PrivateKey GeneratePrivateKeyHash(string id, string privatekey)
+    {
+      SHA256 sha256 = SHA256.Create();
+      byte[] input = Encoding.ASCII.GetBytes($"{privatekey}");
+      var key = sha256.ComputeHash(input);
+      var pvkey = new PrivateKey(id, Convert.ToBase64String(key));
+      return pvkey;
+    }
+  }
+
 
 }
