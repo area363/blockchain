@@ -6,7 +6,8 @@ namespace BlockchainImplementation
 {
   class PublicKey
   {
-    public static string GetPublicKeyFromPrivateKeyEx(string privateKey)
+    // Method to get public key from private key
+    public static string GetPublicKeyFromPrivateKey(string privateKey)
     {
       var curve = SecNamedCurves.GetByName("secp256k1");
       var domain = new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H);
