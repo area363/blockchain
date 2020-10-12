@@ -47,7 +47,7 @@ namespace BlockchainImplementation
         password = Console.ReadLine();
         privateKey = PrivateKey.GeneratePrivateKeyHash(name, name + password).Key;
         internalPrivateKey = string.Join("", Encoding.UTF8.GetBytes(privateKey)).Substring(0, 77);
-        publicKey = PublicKey.GetPublicKeyFromPrivateKeyEx(internalPrivateKey);
+        publicKey = PublicKey.GetPublicKeyFromPrivateKey(internalPrivateKey);
         Console.WriteLine("");
         Console.WriteLine($"Your private key: \"{privateKey}\". Please remember it for future use. We won't be able to recover it for you if you lose it.");
         Console.WriteLine($"Your public key: \"{publicKey}\".");

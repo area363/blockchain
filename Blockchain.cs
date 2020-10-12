@@ -57,7 +57,7 @@ namespace BlockchainImplementation
       // create reward transaction for processing node and add block
       string KCoinPVKey = "Gs5cyGHUggSKg76veFUrw7v7/yUtzdjYV3fIhRqfSLY=";
       string internalPrivateKey = string.Join("", Encoding.UTF8.GetBytes(KCoinPVKey)).Substring(0, 77);
-      string kcoinPublicKey = PublicKey.GetPublicKeyFromPrivateKeyEx(internalPrivateKey);
+      string kcoinPublicKey = PublicKey.GetPublicKeyFromPrivateKey(internalPrivateKey);
       string message = $"1:{kcoinPublicKey}:{address}";
       CreateTransaction(new Transaction(kcoinPublicKey, address, Reward, Signature.GetSignature(internalPrivateKey, message)));
       Block block = new Block(DateTime.Now, GetLastBlock().Hash, PendingTransactions);
