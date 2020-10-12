@@ -14,6 +14,8 @@ namespace BlockchainImplementation
       ID = id;
       Key = privatekey;
     }
+
+    // method to generate private key hash
     public static PrivateKey GeneratePrivateKeyHash(string id, string privatekey)
     {
       SHA256 sha256 = SHA256.Create();
