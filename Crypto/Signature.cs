@@ -8,6 +8,8 @@ namespace BlockchainImplementation
 {
   class Signature
   {
+
+    // Method to verify transaction signature when server receives new blockchain from connected nodes
     public static bool VerifySignature(string message, string publicKey, string signature)
     {
       var curve = SecNamedCurves.GetByName("secp256k1");
@@ -30,6 +32,7 @@ namespace BlockchainImplementation
     }
 
 
+    // Method to generate transaction signature using a privatekey and message
     public static string GetSignature(string privateKey, string message)
     {
       var curve = SecNamedCurves.GetByName("secp256k1");
