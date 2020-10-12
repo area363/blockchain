@@ -16,13 +16,14 @@ namespace BlockchainImplementation
         WebSocket websocket = new WebSocket(url);
         websocket.OnMessage += (sender, e) =>
         {
-          // print data if message is received from server
+          // print message if message received from server is "Connected to Server"
           if (e.Data == "Connected to Server")
           {
             Console.WriteLine(e.Data);
           }
           else
           {
+            // if message is a broadcasted blockchain, verify chain and update node's chain
             Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
             if (newChain.ValidateChain() && newChain.Chain.Count > Program.KCoin.Chain.Count)
             {
